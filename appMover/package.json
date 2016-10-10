@@ -1,0 +1,22 @@
+{
+  "name": "qmcu-app-mover",
+  "version": "1.0.0",
+  "description": "This Qlik Sense QMC Utilities plugin will allow users to export apps out of a single environment and import them into 1 or more seperate Qlik Sense installs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eapowertools/qmcu-app-mover.git"
+  },
+  "author": "Qlik EAPowerTools",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eapowertools/qmcu-app-mover/issues"
+  },
+  "homepage": "https://github.com/eapowertools/qmcu-app-mover#readme",
+  "dependencies": {
+    "@qlik/leonardo-ui": "^0.12.0"
+  }
+}
