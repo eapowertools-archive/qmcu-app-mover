@@ -1,6 +1,111 @@
 <div class="navbar-fixed-top group">
     <div id="page-content-header">
         <h1 class="title">App Mover</h1>
-        <button style="float:right;margin-right:20px;margin-top:20px;" class="lui-button  lui-button--toolbar-inverse" id="help-dialog" ng-click="model.openHelp()">?</button>
+        <button style="float:right;margin-right:20px;margin-top:20px;" class="lui-button  lui-button--toolbar-inverse" id="help-dialog"
+            ng-click="model.openHelp()">?</button>
+    </div>
+</div>
+
+<div id="page-content-body">
+    <div>
+        <form name="form" id="appMoverForm" enctype="multipart/form-data" novalidate>
+            <div id="left">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Hostname to read apps from:
+                    </div>
+                    <div class="form-group" style="position:relative;padding-top:15px;padding-left:15px;padding-right:15px;height:80px;">
+                        <input type="text" class="lui-input" placeholder="enter hostname here" ng-model="model.appListHostname" id="hostname" name="hostname"
+                        />
+                        <div class="frame lui-bg-default">
+                            <button class="lui-button" style="position: absolute;top:55px;right:20px;" ng-click="model.getAppList()">Load Apps</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Select apps to move:
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-bordered table-data">
+                            <colgroup>
+                                <col style="width:85px;min-width:85px;max-width:85px;">
+                                <col style="width:100%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="column" style="width:85px;min-width:85px;max-width:85px;">Selected</th>
+                                    <th class="column" style="width:100%;">App Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="row in model.appListTable">
+                                    <td class="column">
+                                        <label class="lui-checkbox">
+                                            <input name="name" id="row[0]" class="lui-checkbox__input" type="checkbox" ng-model="row[0]" ng-change="model.checkBox(true, row[0], row[1])"/>
+                                            <div class="lui-checkbox__check-wrap">
+                                                <span class="lui-checkbox__check" ></span>
+                                            </div>
+                                        </label>
+                                    </td>
+                                    <td class="column">
+                                        {{row[2]}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="right">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Nodes to deploy to:
+                    </div>
+                    <div class="panel-body">
+                        <div class="frame  lui-bg-default">
+                            <input class="lui-input" placeholder="enter hostname here" ng-model="model.hostnameToAdd" style="display: inline-block;width:80%;"
+                            />
+                            <button class="lui-button" style="display: inline-block;width:15%;margin-left:4.5%;" ng-click="model.addHostnameToList()">Add</button>
+                        </div>
+                        <table class="table table-bordered table-data" style="margin-top:10px;">
+                            <colgroup>
+                                <col style="width:85px;min-width:85px;max-width:85px;">
+                                <col style="width:100%;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class="column" style="width:85px;min-width:85px;max-width:85px;">Selected</th>
+                                    <th class="column" style="width:100%;">Hostname</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="row in model.hostnameListTable">
+                                    <td class="column">
+                                        <label class="lui-checkbox">
+                                            <input name="name" id="row[0]" class="lui-checkbox__input" type="checkbox" ng-model="row[0]" ng-change="model.checkBox(false, row[0], row[1])"/>
+                                            <div class="lui-checkbox__check-wrap">
+                                                <span class="lui-checkbox__check" ></span>
+                                            </div>
+                                        </label>
+                                    </td>
+                                    <td class="column">
+                                        {{row[1]}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="page-content-footer">
+    <div id="button-bar">
+        <button id="buttonDeploy" class="lui-button" ng-class="model.deployButtonValid() ? 'lui-button--toolbar-inverse' : 'lui-disabled'"
+            ng-click="model.deployApps()">Deploy {{model.selectedApps.length}} app(s) to {{model.selectedNodes.length}} node(s)</button>
     </div>
 </div>
