@@ -5,6 +5,14 @@
     function appMoverBodyController($scope, $http, ngDialog) {
         var model = this;
 
+        model.openHelp = function() {
+            ngDialog.open({
+                template: "plugins/appMover/help-dialog.html",
+                className: "help-dialog",
+                controller: appMoverBodyController,
+                scope: $scope
+            });
+        };
     }
 
     module.component("appMoverBody", {

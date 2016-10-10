@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/eapowertools/qmcu-app-mover/issues"
   },
-  "homepage": "https://github.com/eapowertools/qmcu-app-mover#readme"
+  "homepage": "https://github.com/eapowertools/qmcu-app-mover#readme",
+  "dependencies": {
+    "@qlik/leonardo-ui": "^0.12.0"
+  }
 }
