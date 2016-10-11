@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/eapowertools/qmcu-app-mover#readme",
   "dependencies": {
-    "@qlik/leonardo-ui": "^0.12.0"
+    "@qlik/leonardo-ui": "^0.12.0",
+    "qrs-interact": "^2.0.3"
   }
 }

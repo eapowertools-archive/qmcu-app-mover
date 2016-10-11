@@ -19,7 +19,9 @@
         model.selectedNodes = [];
 
         model.getAppList = function () {
-            return $http.post('/appmover/getAppList', {"hostname":model.appListHostname})
+            return $http.post('/appmover/getAppList', {
+                    "hostname": model.appListHostname
+                })
                 .then(function (response) {
                     model.appListTable = response.data;
                     for (var index = 0; index < model.appListTable.length; index++) {
@@ -28,8 +30,8 @@
                 });
         }
 
-        model.addHostnameToList = function() {
-            model.hostnameListTable.push([true, model.hostnameToAdd]);
+        model.addHostnameToList = function () {
+            model.hostnameListTable.push([false, model.hostnameToAdd]);
             model.hostnameToAdd = '';
         }
 
@@ -49,25 +51,39 @@
             return false;
         }
 
-        model.checkBox = function (isApp, isChecked, id) {
+        model.checkBoxApps = function (isChecked, appID, appName) {
             if (isChecked) {
-                if (isApp) {
-                    model.selectedApps.push(id);
-                } else {
-                    model.selectedNodes.push(id);
-                }
+                model.selectedApps.push({"id":appID,"name":appName});
             } else {
-                if (isApp) {
-                    var index = model.selectedApps.indexOf(id);
-                    model.selectedApps.splice(index, 1);
-                } else {
-                    var index = model.selectedNodes.indexOf(id);
-                    model.selectedNodes.splice(index, 1);
-                }
+                var index = model.selectedApps.indexOf({"id":appID,"name":appName});
+                model.selectedApps.splice(index, 1);
             }
             console.log(model.selectedApps);
+        };
+
+        model.checkBoxHostnames = function (isChecked, id) {
+            if (isChecked) {
+                model.selectedNodes.push(id);
+            } else {
+                var index = model.selectedNodes.indexOf(id);
+                model.selectedNodes.splice(index, 1);
+            }
             console.log(model.selectedNodes);
         };
+
+        model.deployApps = function () {
+            return $http.post('/appmover/deployApps', {
+                    "hostname": model.appListHostname,
+                    "apps": model.selectedApps,
+                    "nodes": model.selectedNodes
+                })
+                .then(function (response) {
+                    // model.appListTable = response.data;
+                    // for (var index = 0; index < model.appListTable.length; index++) {
+                    //     model.appListTable[index].unshift(false);
+                    // }
+                });
+        }
     }
 
     module.component("appMoverBody", {

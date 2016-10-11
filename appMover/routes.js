@@ -1,6 +1,7 @@
 var bodyParser = require('body-parser');
 var config = require('./config');
 var express = require('express');
+var fs = require('fs');
 var qrsInteract = require('qrs-interact');
 
 var parseUrlencoded = bodyParser.urlencoded({
@@ -64,6 +65,36 @@ router.route('/getAppList')
                 console.log(error);
             });
 
+    });
+
+router.route('/deployApps')
+    .post(parseUrlencoded, function (request, response) {
+        var appList = request.body.apps;
+        var rootHost = request.body.hostname;
+        var hostnames = request.body.nodes;
+        appList.forEach(function(app) {
+            var instance = getQRSInteractInstance(rootHost);
+            instance.Get('app/'+app.id+'/export').then(function(response) {
+                var ticketID = response.body.value;
+                instance.Get('download/app/'+app.id+'/'+ticketID+'/'+app.name+'.qvf').then(function(response) {
+                    var app = response.body;
+
+                    
+                    hostnames.forEach(function(host) {
+                        console.log("Trying to write file to: \\\\"+host+"\\defaultapps\\"+app.name+".qvf");
+                        fs.writeFile('\\\\'+host+'\\defaultapps\\'+app.name+'.qvf', app, function (err) {
+                            if (err) return console.log(err);
+                            console.log('Writing file success!');
+                        });
+                        // var deployInstance = getQRSInteractInstance(host);
+                        // deployInstance.Post('app/import?name')
+                    }, this);
+
+
+                });
+            });
+
+        }, this);
     });
 
 
