@@ -19,7 +19,7 @@
         model.selectedNodes = [];
 
         model.getAppList = function () {
-            return $http.post('/appmover/getAppList', hostname)
+            return $http.post('/appmover/getAppList', {"hostname":model.appListHostname})
                 .then(function (response) {
                     model.appListTable = response.data;
                     for (var index = 0; index < model.appListTable.length; index++) {

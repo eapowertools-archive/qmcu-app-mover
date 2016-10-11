@@ -7,20 +7,51 @@ var parseUrlencoded = bodyParser.urlencoded({
     extended: false
 });
 var router = express.Router();
-var qrsConfig = {
-    hostname: config.qrs.hostname,
-    localCertPath: config.qrs.localCertPath
-}
-var qrs = new qrsInteract(qrsConfig);
+
+var qrsInteractInstances = [];
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({
     extended: true
 }));
 
+var getQRSInteractInstance = function(hostname) {
+    var qrsInteractInstance;
+    var qrsMatches = qrsInteractInstances.filter(function (interactInstance) {
+        return interactInstance.hostname == hostname;
+    });
+    if (qrsMatches.length == 0)
+    {
+        var qrsConfig = {
+            hostname: hostname,
+            localCertPath: __dirname + "/certs/" + hostname
+        }
+        qrsInteractInstance = new qrsInteract(qrsConfig);
+        qrsInteractInstances.push({"hostname":hostname,"instance":qrsInteractInstance});
+    }
+    else
+    {
+        qrsInteractInstance = qrsMatches[0].instance;
+    }
+
+    return qrsInteractInstance;
+}
+
 router.route('/getAppList')
     .post(parseUrlencoded, function (request, response) {
-        return qrs.Get('app')
+        if (request.body == {})
+        {
+            return;
+        }
+
+        var hostname = request.body.hostname;
+        var instance = getQRSInteractInstance(hostname);
+        if (instance == undefined)
+        {
+            return "Could not create qrs instance for " + hostname;
+        }
+
+        return instance.Get('app')
             .then(function (result) {
                 var appList = [];
                 result.body.forEach(function (app) {
@@ -31,24 +62,6 @@ router.route('/getAppList')
             })
             .catch(function (error) {
                 console.log(error);
-            });
-
-    });
-
-router.route('/getRules')
-    .get(function (request, response) {
-        //first get the table file;
-        var tableDef = fs.readFileSync(config.thisServer.pluginPath + "/rulemanager/data/tableDef.json");
-
-        var filter = "((category+eq+%27Security%27))";
-
-        qrs.Post("systemrule/table?filter=" + filter + "&orderAscending=true&skip=0&sortColumn=name", JSON.parse(tableDef), "json")
-            .then(function (result) {
-                var s = JSON.stringify(result.body);
-                response.send(s);
-            })
-            .catch(function (error) {
-                response.send(error);
             });
 
     });
