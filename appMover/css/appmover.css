@@ -13,9 +13,23 @@
 }
 
 .appMover #page-content-body {
-    margin-top: 108px;
+    margin-top: 80px;
     margin-bottom: 50px;
-    margin-right:15px;
+}
+
+.appMover #page-content-footer {
+   position:fixed;
+   bottom:0px;
+   height:50px;
+   width:100%;
+   background: #8C8C8C;
+}
+
+.appMover #button-bar {
+  position: absolute;
+  top: 50%;
+  left:10px;
+  transform: translateY(-50%);
 }
 
 .appMover .title {
@@ -26,7 +40,29 @@
     padding-left:15px;
 }
 
-.appMover .ngdialog.ngdialog-theme-plain .ngdialog-content {
+.appMover #left {
+    width:48%;
+    float:left;
+    margin-right:1%;
+    margin-left:1%;
+}
+
+.appMover #right {
+    width:48%;
+    float:right;
+    margin-right:1%;
+    margin-left:1%;
+}
+
+.appMover .panel-heading {
+    background-color: #535D5A;
+    border-color: #535D5A;
+}
+
+
+/* Dialog box css */
+
+.ngdialog.ngdialog-theme-plain .ngdialog-content {
     font-family: 'QlikView Sans', sans-serif
 }
 
