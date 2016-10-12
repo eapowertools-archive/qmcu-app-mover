@@ -16,22 +16,22 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-var getQRSInteractInstance = function(hostname) {
+var getQRSInteractInstance = function (hostname) {
     var qrsInteractInstance;
     var qrsMatches = qrsInteractInstances.filter(function (interactInstance) {
         return interactInstance.hostname == hostname;
     });
-    if (qrsMatches.length == 0)
-    {
+    if (qrsMatches.length == 0) {
         var qrsConfig = {
             hostname: hostname,
             localCertPath: __dirname + "/certs/" + hostname
         }
         qrsInteractInstance = new qrsInteract(qrsConfig);
-        qrsInteractInstances.push({"hostname":hostname,"instance":qrsInteractInstance});
-    }
-    else
-    {
+        qrsInteractInstances.push({
+            "hostname": hostname,
+            "instance": qrsInteractInstance
+        });
+    } else {
         qrsInteractInstance = qrsMatches[0].instance;
     }
 
@@ -40,15 +40,13 @@ var getQRSInteractInstance = function(hostname) {
 
 router.route('/getAppList')
     .post(parseUrlencoded, function (request, response) {
-        if (request.body == {})
-        {
+        if (request.body == {}) {
             return;
         }
 
         var hostname = request.body.hostname;
         var instance = getQRSInteractInstance(hostname);
-        if (instance == undefined)
-        {
+        if (instance == undefined) {
             return "Could not create qrs instance for " + hostname;
         }
 
@@ -64,7 +62,6 @@ router.route('/getAppList')
             .catch(function (error) {
                 console.log(error);
             });
-
     });
 
 router.route('/deployApps')
@@ -72,29 +69,24 @@ router.route('/deployApps')
         var appList = request.body.apps;
         var rootHost = request.body.hostname;
         var hostnames = request.body.nodes;
-        appList.forEach(function(app) {
+        appList.forEach(function (app) {
             var instance = getQRSInteractInstance(rootHost);
-            instance.Get('app/'+app.id+'/export').then(function(response) {
+            instance.Get('app/' + app.id + '/export').then(function (response) {
                 var ticketID = response.body.value;
-                instance.Get('download/app/'+app.id+'/'+ticketID+'/'+app.name+'.qvf').then(function(response) {
+                instance.Get('download/app/' + app.id + '/' + ticketID + '/' + app.name + '.qvf').then(function (response) {
                     var appBinary = response.body;
 
-                    
-                    hostnames.forEach(function(host) {
-                        console.log("Trying to write file to: \\\\"+host+"\\defaultapps\\"+app.name+".qvf");
-                        fs.writeFile('\\\\'+host+'\\defaultapps\\'+app.name+'.qvf', appBinary, function (err) {
+                    hostnames.forEach(function (host) {
+                        console.log("Trying to write file to: \\\\" + host + "\\defaultapps\\" + app.name + ".qvf");
+                        fs.writeFile('\\\\' + host + '\\defaultapps\\' + app.name + '.qvf', appBinary, function (err) {
                             if (err) return console.log(err);
                             console.log('Writing file success!');
                             var deployInstance = getQRSInteractInstance(host);
-                           deployInstance.Post('app/import?name='+app.name, app.name+".qvf", 'json');
+                            deployInstance.Post('app/import?name=' + app.name, app.name + ".qvf");
                         });
-                        
                     }, this);
-
-
                 });
             });
-
         }, this);
     });
 
