@@ -82,7 +82,7 @@ router.route('/deployApps')
                             if (err) return console.log(err);
                             console.log('Writing file success!');
                             var deployInstance = getQRSInteractInstance(host);
-                            deployInstance.Post('app/import?name=' + app.name, app.name + ".qvf");
+                            deployInstance.Post('app/import?name=' + app.name, app.name + ".qvf", 'json');
                         });
                     }, this);
                 });
