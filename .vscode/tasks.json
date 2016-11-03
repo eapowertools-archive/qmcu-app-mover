@@ -2,20 +2,30 @@
 // for the documentation about the tasks.json format
 {
     "version": "0.1.0",
-    "command": "cmd",
-    "args": ["/C"],
+    "windows": {
+        "command": "cmd",
+        "args": [
+            "/C"
+        ]
+    },
+    "osx": {
+        "command": "sh",
+        "args": [
+            "-C"
+        ]
+    },
     "isShellCommand": true,
     "showOutput": "always",
     "suppressTaskName": true,
     "tasks": [
         {
             "taskName": "deploy",
-            "args": ["deploy"],
+            "args": ["./deploy.bat"],
             "isBuildCommand": true
         },
         {
             "taskName": "copyNPMPackages",
-            "args": ["copyNPMPackages"]
+            "args": ["./copyNPMPackages.bat"]
         }
     ]
 }
