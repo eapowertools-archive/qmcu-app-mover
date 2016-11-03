@@ -25,7 +25,7 @@
         },
         {
             "taskName": "copyNPMPackages",
-            "args": ["copyNPMPackages"]
+            "args": ["./copyNPMPackages.bat"]
         }
     ]
 }
