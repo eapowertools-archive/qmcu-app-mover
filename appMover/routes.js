@@ -74,17 +74,19 @@ router.route('/deployApps')
             instance.Get('app/' + app.id + '/export').then(function (response) {
                 var ticketID = response.body.value;
                 instance.Get('download/app/' + app.id + '/' + ticketID + '/' + app.name + '.qvf').then(function (response) {
-                    var appBinary = response.body;
-
-                    hostnames.forEach(function (host) {
-                        console.log("Trying to write file to: \\\\" + host + "\\defaultapps\\" + app.name + ".qvf");
-                        fs.writeFile('\\\\' + host + '\\defaultapps\\' + app.name + '.qvf', appBinary, function (err) {
-                            if (err) return console.log(err);
-                            console.log('Writing file success!');
+                    var fileName = __dirname + "/temp/" + app.name + '.qvf';
+                    fs.writeFile(fileName, response.body, function (err) {
+                        if (err) return console.log(err);
+                        console.log('Writing file success!');
+                        var appStream = fs.createReadStream(fileName);
+                        hostnames.forEach(function (host) {
+                            console.log("Trying to upload app to: " + host);
                             var deployInstance = getQRSInteractInstance(host);
-                            deployInstance.Post('app/import?name=' + app.name, app.name + ".qvf", 'json');
-                        });
-                    }, this);
+                            deployInstance.Post('app/upload?name=' + appName, appStream, 'vnd.qlik.sense.app');
+                        }, this);
+
+
+                    });
                 });
             });
         }, this);
