@@ -2,6 +2,7 @@ var bodyParser = require('body-parser');
 var config = require('./config');
 var express = require('express');
 var fs = require('fs');
+var promise = require('bluebird');
 var qrsInteract = require('qrs-interact');
 
 var parseUrlencoded = bodyParser.urlencoded({
@@ -69,27 +70,41 @@ router.route('/deployApps')
         var appList = request.body.apps;
         var rootHost = request.body.hostname;
         var hostnames = request.body.nodes;
-        appList.forEach(function (app) {
+        var directory = __dirname + "/temp/";
+        fs.mkdirSync(directory);
+        promise.map(appList, function (app) {
             var instance = getQRSInteractInstance(rootHost);
-            instance.Get('app/' + app.id + '/export').then(function (response) {
+            return instance.Get('app/' + app.id + '/export').then(function (response) {
                 var ticketID = response.body.value;
-                instance.Get('download/app/' + app.id + '/' + ticketID + '/' + app.name + '.qvf').then(function (response) {
-                    var fileName = __dirname + "/temp/" + app.name + '.qvf';
-                    fs.writeFile(fileName, response.body, function (err) {
-                        if (err) return console.log(err);
-                        console.log('Writing file success!');
-                        var appStream = fs.createReadStream(fileName);
-                        hostnames.forEach(function (host) {
-                            console.log("Trying to upload app to: " + host);
-                            var deployInstance = getQRSInteractInstance(host);
-                            deployInstance.Post('app/upload?name=' + appName, appStream, 'vnd.qlik.sense.app');
-                        }, this);
-
-
+                return instance.Get('download/app/' + app.id + '/' + ticketID + '/' + app.name + '.qvf').then(function (response) {
+                    var fileName = directory + app.name + '.qvf';
+                    return new promise(function (resolve) {
+                        fs.writeFile(fileName, response.body, {
+                            flag: 'w'
+                        }, function (err) {
+                            if (err) return console.log(err);
+                            console.log('Writing file success!');
+                            var appStream = fs.createReadStream(fileName);
+                            var uploadPromises = [];
+                            hostnames.forEach(function (host) {
+                                console.log("Trying to upload app to: " + host);
+                                var deployInstance = getQRSInteractInstance(host);
+                                uploadPromises.push(deployInstance.Post('app/upload?name=' + app.name, appStream, 'vnd.qlik.sense.app'));
+                            }, this);
+                            resolve(promise.all(uploadPromises).then(function (result) {
+                                fs.unlinkSync(fileName);
+                                console.log("Upload of '" + app.name + "' complete to all nodes.");
+                            }));
+                        });
                     });
                 });
             });
-        }, this);
+        }, {
+            concurrency: 1
+        }).then(function (result) {
+            fs.rmdirSync(directory);
+            console.log("App deployments complete.");
+        });
     });
 
 
