@@ -10,7 +10,7 @@ _NOTE:_ *You must follow the certificate management section for app-mover to fun
 
 ####   Certificate Management
 
-App mover authenticates with the various Qlik Sense servers using certificates. In order to manage the certificates, you _MUST_ create a `certs` folder with the `appMover` plugin folder, which is usually found at `C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover`. Which means you should end up with a folder structure that looks like `C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs`.
+App mover authenticates with the various Qlik Sense servers using certificates. In order to manage the certificates, you _MUST_ create a `certs` folder within the `appMover` plugin folder, which is usually found at `C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover`. Which means you should end up with a folder structure that looks like `C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs`.  
 
 Once this is done, you must create a folder for *EACH* machine you want to push or pull apps from. The name of the folder must match the hostname you use in the utility. This means you can use `localhost` or full-qualified domain names, as long as the network can resolve the name. Once you've created a subfolder with the name you will use in the utility, you must copy the respective certificates into the folder. You can find the certificates you need on the server you are trying to connect to at `C:\ProgramData\Qlik\Sense\Repository\Exported Certificates\.Local Certificates`. You need the `client.pem`, and `client_key.pem` files. You then must put these files into the subfolder you created in the certs folder.
 
