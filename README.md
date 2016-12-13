@@ -16,8 +16,8 @@ Once this is done, you must create a folder for *EACH* machine you want to push 
 
 ####   Example - Certificate Management
 
-Lets say you want to pull apps from a machine called `central.myDomain.com` and push apps to a machine called `extendedServer.myDomain.com`. The folder structure would look as follows for the following certificates on the machine running QMC utilities if you have the default install location:
-`C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\central.myDomain.com\client.pem`
-`C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\central.myDomain.com\client_key.pem`
-`C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\extendedServer.myDomain.com\client.pem`
+Lets say you want to pull apps from a machine called `central.myDomain.com` and push apps to a machine called `extendedServer.myDomain.com`. The folder structure would look as follows for the following certificates on the machine running QMC utilities if you have the default install location:  
+`C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\central.myDomain.com\client.pem`  
+`C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\central.myDomain.com\client_key.pem`  
+`C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\extendedServer.myDomain.com\client.pem`  
 `C:\Program Files\Qlik\Sense\EAPowerTools\QMCUtilities\plugins\appMover\certs\extendedServer.myDomain.com\client_key.pem`
