@@ -1,8 +1,13 @@
 # qmcu-app-mover
 This QMC Utilities plugin will allow users to export apps out of an environment and move them to other Qlik Sense environments.
 
+###How it Works
+App mover uses the QRS API to connect to the source and destination Qlik Sense servers. From the user interface, the user selects the apps they wish to deploy on a destination server from the source server. App mover takes that information, exports the app, then uploads and imports the app onto the destination site.
+
 
 ###Usage
+
+![1](https://s3.amazonaws.com/eapowertools/qmcutilities/AppMover.png)
 
 To use the app-mover plugin with QMC Utilities, you simply enter the hostname of the machine you want to pull the apps from, then add 1 or many machine names that you want to push the apps to. Once you enter the hostname to read the apps from, push the 'Load Apps' button and all the apps should appear in the list. You can then select which ones you would like to move.
 
