@@ -20,12 +20,12 @@
     "tasks": [
         {
             "taskName": "deploy",
-            "args": ["./deploy.bat"],
+            "args": ["deploy.bat"],
             "isBuildCommand": true
         },
         {
             "taskName": "copyNPMPackages",
-            "args": ["./copyNPMPackages.bat"]
+            "args": ["copyNPMPackages.bat"]
         }
     ]
 }
