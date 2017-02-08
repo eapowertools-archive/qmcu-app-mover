@@ -4,6 +4,10 @@ var express = require('express');
 var fs = require('fs');
 var promise = require('bluebird');
 var qrsInteract = require('qrs-interact');
+var socket = require('socket.io-client')('https://localhost:9945', {
+    secure: true,
+    reconnect: true
+});
 
 var parseUrlencoded = bodyParser.urlencoded({
     extended: false
@@ -71,6 +75,10 @@ router.route('/deployApps')
         var rootHost = request.body.hostname;
         var hostnames = request.body.nodes;
         var directory = __dirname + "/temp/";
+
+        socket.emit("appMover", "Trying to deploy apps.");
+
+
         fs.mkdirSync(directory);
         promise.map(appList, function (app) {
             var instance = getQRSInteractInstance(rootHost);

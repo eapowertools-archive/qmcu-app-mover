@@ -6,26 +6,31 @@
         "command": "cmd",
         "args": [
             "/C"
-        ]
+        ],
+        "tasks": [{
+            "taskName": "deploy",
+            "args": ["deployScripts\\deploy_win.bat"],
+            "isBuildCommand": true
+        }, {
+            "taskName": "copyNPMPackages",
+            "args": ["deployScripts\\copyNPMPackages_win.bat"]
+        }]
     },
     "osx": {
         "command": "sh",
         "args": [
             "-C"
-        ]
+        ],
+        "tasks": [{
+            "taskName": "deploy",
+            "args": ["deployScripts/deploy_osx.sh"],
+            "isBuildCommand": true
+        }, {
+            "taskName": "copyNPMPackages",
+            "args": ["deployScripts/copyNPMPackages_osx.sh"]
+        }]
     },
     "isShellCommand": true,
     "showOutput": "always",
-    "suppressTaskName": true,
-    "tasks": [
-        {
-            "taskName": "deploy",
-            "args": ["deploy.bat"],
-            "isBuildCommand": true
-        },
-        {
-            "taskName": "copyNPMPackages",
-            "args": ["copyNPMPackages.bat"]
-        }
-    ]
+    "suppressTaskName": true
 }

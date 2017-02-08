@@ -1,6 +1,9 @@
 (function () {
     "use strict";
-    var module = angular.module("QMCUtilities", ["ngDialog"])
+    var module = angular.module("QMCUtilities", ["ngDialog", "btford.socket-io"])
+    .factory('mySocket', function (socketFactory) {
+            return socketFactory();
+        });
 
     function fetchTableHeaders($http) {
         return $http.post('/sheetapprover/getAppList', sheetIds)
@@ -9,7 +12,7 @@
             });
     }
 
-    function appMoverBodyController($scope, $http, ngDialog) {
+    function appMoverBodyController($scope, $http, ngDialog, mySocket) {
         var model = this;
         model.appListHostname = '';
         model.hostnameToAdd = '';
@@ -17,6 +20,11 @@
         model.hostnameListTable = [];
         model.selectedApps = [];
         model.selectedNodes = [];
+        model.statusOutput = '';
+
+        mySocket.on("appMover", function (msg) {
+            model.statusOutput += msg + "\n";
+        });
 
         model.getAppList = function () {
             return $http.post('/appmover/getAppList', {
@@ -90,7 +98,7 @@
         transclude: true,
         templateUrl: "plugins/appMover/app-mover-body.html",
         controllerAs: "model",
-        controller: ["$scope", "$http", "ngDialog", appMoverBodyController]
+        controller: ["$scope", "$http", "ngDialog", "mySocket", appMoverBodyController]
     });
 
 }());
