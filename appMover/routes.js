@@ -108,18 +108,32 @@ router.route('/deployApps')
                         fs.writeFile(fileName, response.body, {
                             flag: 'w'
                         }, function (err) {
-                            if (err) return console.log(err);
-                            console.log('Writing file success!');
+                            if (err) {
+                                socket.emit("appMover", "An error occuring when trying to get app to transfer.");
+                                socket.emit("appMover", "\tMessage: " + err);
+                                return;
+                            }
+                            socket.emit("appMover", "Retrieved app '" + app.name + "'.");
                             var appStream = fs.createReadStream(fileName);
                             var uploadPromises = [];
                             hostnames.forEach(function (host) {
-                                console.log("Trying to upload app to: " + host);
+                                socket.emit("appMover", "Trying to upload app '" + app.name + "' to: " + host);
                                 var deployInstance = getQRSInteractInstance(host);
-                                uploadPromises.push(deployInstance.Post('app/upload?name=' + app.name, appStream, 'vnd.qlik.sense.app'));
+                                uploadPromises.push(
+                                    deployInstance.Post('app/upload?name=' + app.name, appStream, 'vnd.qlik.sense.app')
+                                    .catch(function (error) {
+                                        socket.emit("appMover", "An error occuring trying to upload app '" + app.name + "' to: " + host);
+                                        socket.emit("appMover", "\tMessage: " + error);
+
+                                        if (error.includes("403")) {
+                                            var indexOfInstance = qrsInteractInstances.indexOf(instance);
+                                            qrsInteractInstances.splice(indexOfInstance, 1);
+                                        }
+                                    }));
                             }, this);
                             resolve(promise.all(uploadPromises).then(function (result) {
                                 fs.unlinkSync(fileName);
-                                console.log("Upload of '" + app.name + "' complete to all nodes.");
+                                socket.emit("appMover", "Upload of '" + app.name + "' complete to all nodes.");
                             }));
                         });
                     });
@@ -129,7 +143,7 @@ router.route('/deployApps')
             concurrency: 1
         }).then(function (result) {
             fs.rmdirSync(directory);
-            console.log("App deployments complete.");
+            socket.emit("appMover", "App deployments complete.");
         });
     });
 
