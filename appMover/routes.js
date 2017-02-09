@@ -50,7 +50,19 @@ router.route('/getAppList')
         }
 
         var hostname = request.body.hostname;
-        var instance = getQRSInteractInstance(hostname);
+        var instance;
+        try {
+            instance = getQRSInteractInstance(hostname);
+
+        } catch (err) {
+            if (err.code == "ENOENT") {
+                socket.emit("appMover", "An error occuring trying to connect to '" + hostname + "'. Certificates at '" + err.path + "' could not be found.");
+            } else {
+                socket.emit("appMover", "An error occuring trying to connect to '" + hostname + "'");
+                socket.emit("appMover", "\tMessage: " + err.message);
+            }
+            return;
+        }
         if (instance == undefined) {
             return "Could not create qrs instance for " + hostname;
         }
@@ -65,7 +77,13 @@ router.route('/getAppList')
                 return;
             })
             .catch(function (error) {
-                console.log(error);
+                socket.emit("appMover", "An error occuring trying to retrieve app list.");
+                socket.emit("appMover", "\tMessage: " + error);
+
+                if (error.includes("403")) {
+                    var indexOfInstance = qrsInteractInstances.indexOf(instance);
+                    qrsInteractInstances.splice(indexOfInstance, 1);
+                }
             });
     });
 
