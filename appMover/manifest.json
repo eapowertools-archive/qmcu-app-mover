@@ -1,5 +1,6 @@
 {
     "title":"App Mover",
     "pluginDir": "appMover",
-    "stage": "alpha"
+    "stage": "alpha",
+    "useSocketIO": true
 }
