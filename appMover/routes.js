@@ -95,21 +95,27 @@ router.route('/deployApps')
         var directory = __dirname + "/temp/";
 
         socket.emit("appMover", "Trying to deploy apps.");
+        try {
+            fs.mkdirSync(directory);
+        } catch (err) {}
+        socket.emit("appMover", "Done creating temporary directory.");
 
-
-        fs.mkdirSync(directory);
         promise.map(appList, function (app) {
+            socket.emit("appMover", "Setting up node to send application to.");
+
             var instance = getQRSInteractInstance(rootHost);
+            socket.emit("appMover", "Getting app(s) from: " + rootHost);
             return instance.Get('app/' + app.id + '/export').then(function (response) {
                 var ticketID = response.body.value;
                 return instance.Get('download/app/' + app.id + '/' + ticketID + '/' + app.name + '.qvf').then(function (response) {
                     var fileName = directory + app.name + '.qvf';
+                    socket.emit("appMover", "Temporarily writing app to local disk.");
                     return new promise(function (resolve) {
                         fs.writeFile(fileName, response.body, {
                             flag: 'w'
                         }, function (err) {
                             if (err) {
-                                socket.emit("appMover", "An error occuring when trying to get app to transfer.");
+                                socket.emit("appMover", "An error occuring when trying to write app to temp file.");
                                 socket.emit("appMover", "\tMessage: " + err);
                                 return;
                             }
@@ -137,7 +143,13 @@ router.route('/deployApps')
                             }));
                         });
                     });
+                }).catch(function (error) {
+                    socket.emit("appMover", "Failed to get app binary '" + app.name + "' from '" + rootHost + "'.");
+                    socket.emit("appMover", "\tError message: " + error);
                 });
+            }).catch(function (error) {
+                socket.emit("appMover", "Failed to get app ticket for app '" + app.name + "' from '" + rootHost + "'.");
+                socket.emit("appMover", "\tError message: " + error);
             });
         }, {
             concurrency: 1
