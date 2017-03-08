@@ -7,7 +7,7 @@
 
 
 
-    function appMoverBodyController($scope, $http, ngDialog, mySocket) {
+    function appMoverBodyController($scope, $http, ngDialog, mySocket, qmcuWindowLocationService) {
         var model = this;
         model.appListHostname = '';
         model.hostnameToAdd = '';
@@ -16,6 +16,7 @@
         model.selectedApps = [];
         model.selectedNodes = [];
         model.statusOutput = '';
+        model.host = qmcuWindowLocationService.host;
 
         mySocket.on("appMover", function(msg) {
             model.statusOutput += msg + "\n";
@@ -93,7 +94,7 @@
         transclude: true,
         templateUrl: "plugins/appMover/app-mover-body.html",
         controllerAs: "model",
-        controller: ["$scope", "$http", "ngDialog", "mySocket", appMoverBodyController]
+        controller: ["$scope", "$http", "ngDialog", "mySocket", "qmcuWindowLocationService", appMoverBodyController]
     });
 
 }());
