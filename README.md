@@ -1,3 +1,6 @@
+# Status
+[![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+
 # qmcu-app-mover
 This QMC Utilities plugin will allow users to export apps out of an environment and move them to other Qlik Sense environments.
 
