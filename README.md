@@ -10,7 +10,7 @@ App mover uses the QRS API to connect to the source and destination Qlik Sense s
 
 ###Usage
 
-![1](https://s3.amazonaws.com/eapowertools/qmcutilities/AppMover.png)
+![1](https://github.com/eapowertools/QlikSenseQMCUtility/wiki/imgs/AppMover.png)
 
 To use the app-mover plugin with QMC Utilities, you simply enter the hostname of the machine you want to pull the apps from, then add 1 or many machine names that you want to push the apps to. Once you enter the hostname to read the apps from, push the 'Load Apps' button and all the apps should appear in the list. You can then select which ones you would like to move.
 
